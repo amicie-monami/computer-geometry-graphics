@@ -30,8 +30,8 @@ class App:
                     -0.5, -0.5, 0.0,
                     -0.7,  0.5, 0.0 
                 ], np.float32), 
-                "shaders/vertex.txt", 
-                "shaders/fragment_left.txt",
+                "shaders/vertex.glsl", 
+                "shaders/fragment_left.glsl",
             ),
             Triangle(
                 np.array([
@@ -39,8 +39,8 @@ class App:
                      0.4,  0.5, 0.0,
                      0.0, -0.5, 0.0 
                 ], np.float32), 
-                "shaders/vertex.txt", 
-                "shaders/fragment_center.txt",
+                "shaders/vertex.glsl", 
+                "shaders/fragment_center.glsl",
             ),
             Triangle(
                 np.array([
@@ -48,8 +48,8 @@ class App:
                     0.5, -0.5, 0.0,
                     0.7,  0.5, 0.0 
                 ], np.float32), 
-                "shaders/vertex.txt", 
-                "shaders/fragment_right.txt",
+                "shaders/vertex.glsl", 
+                "shaders/fragment_right.glsl",
             ),
         ]
         return
