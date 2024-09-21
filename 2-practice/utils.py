@@ -11,6 +11,11 @@ def calculate_polygon_vertices(n, scale_x=1.0, scale_y=1.0):
         vertices.append((x, y, 1.0))
     return vertices
 
+2 * 180 * 0 / 3 + 90
+2 * 180 * 1 / 3 + 90
+2 * 180 * 2 / 3 + 90
+ 
+360 / 3 + 90
 
 def prepare_vertices(vertices_coords):
     vertices = []

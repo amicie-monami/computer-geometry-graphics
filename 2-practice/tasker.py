@@ -8,9 +8,10 @@ from shader import Shader
 from shapes.figure import Figure
 
 
-VERTICES_NUMBER = 8
+VERTICES_NUMBER = 5
 SCALE_X = 0.70
 SCALE_Y = 0.95
+
 POINT_SIZE = 10
 POINT_SMOOTH = GL_POINT_SMOOTH # || None
 LINE_THICKNESS = 2
@@ -27,13 +28,8 @@ class Tasker:
 
         glfw.set_key_callback(window.window, self.handle_input)
 
-        self.tasks_keys = [
-            glfw.KEY_1, glfw.KEY_2, glfw.KEY_3, glfw.KEY_4, glfw.KEY_5
-        ]
-
-        tasks_handlers = [
-            self.first_task,self.second_task,self.third_task,self.fourth_task, self.five_task
-        ]
+        self.tasks_keys = [glfw.KEY_1, glfw.KEY_2, glfw.KEY_3, glfw.KEY_4, glfw.KEY_5, glfw.KEY_6]
+        tasks_handlers  = [self.first_task,self.second_task,self.third_task,self.fourth_task, self.five_task, self.six_task]
         
         self.tasks = {key: task for key, task in zip(self.tasks_keys, tasks_handlers)}
 
@@ -152,4 +148,19 @@ class Tasker:
         
         self.objects = [Figure(shader, np.array(vertices, dtype=np.float32), draw_mode)]
         self.last_task = self.five_task
+
+    def six_task(self):
+        """
+        Using the primitive for randering a fan of triangles,
+        construct a regular n-gon.
+        """
+        shader = Shader("shaders/flat_vertex.glsl", "shaders/flat_fragment.glsl")
+
+        vertices_coords = utils.calculate_polygon_vertices(VERTICES_NUMBER, SCALE_X, SCALE_Y)
+        vertices = utils.prepare_vertices(vertices_coords)
+
+        self.objects = [Figure(shader, np.array(vertices, dtype=np.float32), GL_TRIANGLE_FAN)]
+        self.last_task = self.six_task
+
+    
 
