@@ -12,7 +12,6 @@ class Window:
         self.window = glfw.create_window(width, height, "Second Practice", None, None)
         glfw.make_context_current(self.window)
         glClearColor(0.1, 0.1, 0.1, 1)
-        glEnable(GL_LINE_SMOOTH);
         atexit.register(self.__terminate__)
 
     def poll_events(self):

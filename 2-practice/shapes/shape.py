@@ -2,10 +2,9 @@ from OpenGL.GL import *
 
 class Shape:
     
-    def __init__(self, shader, vertices, smooth):
+    def __init__(self, shader, vertices):
         self.shader = shader
         self.vertices = vertices
-        self.smooth = smooth
         self.vao = None
         self.vbo = None
         self.__init_buffers__()
@@ -15,21 +14,21 @@ class Shape:
         """
         Rendering the shape on the screen.
         """
-        if self.smooth:
+        if smooth_mode is not None:
             glEnable(smooth_mode)
 
         self.shader.use()
         glBindVertexArray(self.vao)
         glDrawArrays(draw_mode, 0, vertex_count)
 
-        if self.smooth:
+        if smooth_mode is not None:
             glDisable(smooth_mode)
 
 
     def __init_buffers__(self):
         """
-        Initializes and binds the Vertex Array Object (VAO) and Vertex Buffer Object (VBO).
-        This sets up the buffer memory and uploads vertex data to the GPU.
+        Initializes and binds the Vertex Array Object (VAO) and Vertex Buffer Object (VBO)
+        This sets up the buffer memory and uploads vertex data to the GPU
         """
         self.vao = glGenVertexArrays(1)
         self.vbo = glGenBuffers(1)
@@ -39,7 +38,7 @@ class Shape:
 
     def __set_attributes__(self):
         """
-        Setting the shape attributes: (position, color)
+        Setting the vertex attributes(coordinates, color)
         """
         #(layout(location = 0))
         position_attribute_idx = 0

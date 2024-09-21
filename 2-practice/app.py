@@ -12,7 +12,6 @@ class App:
         window = self.window
         while not window.should_close():
             window.poll_events()
-            self.tasker.handle_input()
             self.draw()
 
     def draw(self):
