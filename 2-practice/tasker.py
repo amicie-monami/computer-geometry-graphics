@@ -5,6 +5,7 @@ from random import random as rand
 import utils
 from shader import Shader
 from shapes.line import Line
+from shapes.broken_line import BrokenLine
 from shapes.point import Point
 from shapes.polygon import Polygon
 
@@ -88,23 +89,20 @@ class Tasker:
 
         vertices = [
             # x1    y1    z1    x2    y2    z2
-            [-0.9,  0.4,  1.0, -0.2,  0.8,  1.0],
-            [-0.2,  0.8,  1.0,  0.0,  0.0,  1.0],
-            [ 0.0,  0.0,  1.0, -0.5, -0.6,  1.0],
-            [-0.5, -0.6,  1.0,  0.4, -0.6,  1.0],
-            [ 0.4, -0.6,  1.0,  0.8,  0.0,  1.0],
+            -0.9,  0.4,  1.0, -0.2,  0.8,  1.0,
+            -0.2,  0.8,  1.0,  0.0,  0.0,  1.0,
+             0.0,  0.0,  1.0, -0.5, -0.6,  1.0,
+            -0.5, -0.6,  1.0,  0.4, -0.6,  1.0,
+             0.4, -0.6,  1.0,  0.8,  0.0,  1.0,
         ]
 
         self.objects = []
 
-        for vertex in vertices:
-            coords = np.array(vertex, dtype=np.float32)
-            
-            random_rgb = [rand() for _ in range(6)]
-            
-            colors = np.array(random_rgb, dtype=np.float32)
 
-            self.objects.append(Line(self.shader, coords, colors, LINE_THICKNESS, LINE_SMOOTH))        
-
+        coords = np.array(vertices, dtype=np.float32)
+        random_rgb = [rand() for _ in range(len(vertices))]
+        colors = np.array(random_rgb, dtype=np.float32)
+        
+        self.objects.append(BrokenLine(self.shader, coords, colors, LINE_THICKNESS, LINE_SMOOTH))        
     
         
