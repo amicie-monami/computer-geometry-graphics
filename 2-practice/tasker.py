@@ -203,3 +203,47 @@ class Tasker:
         self.last_task = self.seven_task
 
 
+    def eighth_task(self):
+        """
+        Render third figure, various polygon
+        a) front - points,  back - filling
+        b) front - filling, back - lines
+        c) front - lines,   back - lines 
+        """
+        a = [ 0.0,  0.9, 1.0]
+        b = [-0.8,  0.9, 1.0]
+        c = [-0.8,  0.1, 1.0]
+        d = [-0.8, -0.8, 1.0]
+        e = [-0.6,  0.3, 1.0]
+        f = [-0.1, -0.2, 1.0]
+        g = [ 0.7, -0.8, 1.0]
+        h = [ 0.3,  0.2, 1.0]
+        i = [ 0.7,  0.5, 1.0]
+        j = [ 0.3,  0.7, 1.0]
+
+        vertices_coords = [
+            a,b,c,  
+            c,d,e,  
+            d,e,f,  d,f,g,  
+            g,f,h,  g,h,i,  
+            h,i,j
+        ]
+
+        vertices = utils.prepare_vertices(vertices_coords)
+
+        match self.paragraph:
+            case glfw.KEY_A:
+                figure = Figure(self.flat_shader, vertices, GL_TRIANGLES, front_mode=GL_POINT, back_mode=GL_FILL)
+                self.objects = [figure]
+
+            case glfw.KEY_B:
+                figure = Figure(self.flat_shader, vertices, GL_TRIANGLES, front_mode=GL_FILL, back_mode=GL_LINE)
+                self.objects = [figure]
+
+            case glfw.KEY_C:
+                figure = Figure(self.flat_shader, vertices, GL_TRIANGLES, front_and_back_mode=GL_LINE)
+                self.objects = [figure]
+
+        self.last_task = self.eighth_task
+
+
