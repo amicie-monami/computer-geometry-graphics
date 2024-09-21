@@ -44,6 +44,9 @@ class Tasker:
         elif self.window.get_key(glfw.KEY_3) == glfw.PRESS:
             self.third_task()
 
+        elif self.window.get_key(glfw.KEY_4) == glfw.PRESS:
+            self.fourth_task()
+
 
     def first_task(self):
         """
@@ -105,4 +108,25 @@ class Tasker:
         
         self.objects.append(BrokenLine(self.shader, coords, colors, LINE_THICKNESS, LINE_SMOOTH))        
     
+    def fourth_task(self):
+        """
+        Draw a closed broken line
+        """
+
+        vertices = [
+            # x1    y1    z1    x2    y2    z2
+             0.0,  1.0,  1.0, -0.7,  -0.1,  1.0,
+            -0.7, -0.1,  1.0,  0.3,  -0.8,  1.0,
+             0.3, -0.8,  1.0,  0.7,  -0.1,  1.0,
+             0.7, -0.1,  1.0,  0.25,  0.2,  1.0,
+             0.25,  0.2,  1.0, 0.5,   0.7,  1.0,
+        ]
+
+        self.objects = []
+
+        coords = np.array(vertices, dtype=np.float32)
+        random_rgb = [rand() for _ in range(len(vertices))]
+        colors = np.array(random_rgb, dtype=np.float32)
         
+        self.objects.append(Polygon(self.shader, coords, colors, LINE_THICKNESS, LINE_SMOOTH))        
+    
