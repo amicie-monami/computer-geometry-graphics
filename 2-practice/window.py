@@ -9,13 +9,15 @@ class Window:
 
     def __init__(self, width=SCREEN_WIDTH, height=SCREEN_HEIGHT):
         glfw.init()
-        self.window = glfw.create_window(width, height, "First Practice", None, None)
+        self.window = glfw.create_window(width, height, "Second Practice", None, None)
         glfw.make_context_current(self.window)
-        glClearColor(0.1, 0.2, 0.2, 1)
+        glClearColor(0.1, 0.1, 0.1, 1)
+        glEnable(GL_LINE_SMOOTH);
         atexit.register(self.__terminate__)
 
     def poll_events(self):
         glfw.poll_events()
+        
         if self.get_key(glfw.KEY_ESCAPE) == glfw.PRESS:
             glfw.set_window_should_close(self.window, True)
 

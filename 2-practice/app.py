@@ -1,39 +1,24 @@
-from OpenGL.GL import * 
-import window
-import numpy
-from shapes.shader import Shader 
-from shapes.point import Point 
-import utils
-
+from window import Window
+from tasker import Tasker 
 
 class App:
 
     def __init__(self):
-        self.window = window.Window() 
-        self.objects = []
-        self.main_loop()
+        self.window = Window(640, 480)
+        self.tasker = Tasker(self.window)
         return
         
-    def main_loop(self):
-        shader = Shader("shaders/vertex.glsl", "shaders/fragment.glsl")
+    def run(self):        
+        window = self.window
+        while not window.should_close():
+            window.poll_events()
+            self.tasker.handle_input()
+            self.draw()
 
-        n = 6
-        vertices = utils.calculate_polygon_vertices(n, scale_x=0.5, scale_y=0.5)
-        for idx, (x, y) in enumerate(vertices):
-            self.objects.append(Point(shader, numpy.array([x, y, 1.0], dtype=numpy.float32), numpy.array([0.5, 0.5, 1.0], dtype=numpy.float32), 5))
-        
-        while not self.window.should_close():
-            self.window.clear()
-            self.window.poll_events()
+    def draw(self):
+        self.window.clear()
+        for obj in self.tasker.actual_objects():
+            obj.draw()
+        self.window.swap_buffers()
 
-            for obj in self.objects:
-                obj.draw()
-
-            self.window.swap_buffers()
-        return
-    
-    def draw_menu():
-        pass
-
-
-App()
+App().run()
