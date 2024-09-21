@@ -3,8 +3,8 @@ import numpy as np
 from random import random as rand
 
 import utils
-from window import Window
 from shader import Shader
+from shapes.line import Line
 from shapes.point import Point
 from shapes.polygon import Polygon
 
@@ -21,7 +21,8 @@ class Tasker:
     def __init__(self, window):
         self.objects = []
         self.window = window
-    
+        self.shader = Shader("shaders/vertex.glsl", "shaders/fragment.glsl")
+
     def actual_objects(self):
         """
         Return current scene objects for rendering
@@ -38,7 +39,11 @@ class Tasker:
 
         elif self.window.get_key(glfw.KEY_2) == glfw.PRESS:
             self.second_task()
-        
+
+        elif self.window.get_key(glfw.KEY_3) == glfw.PRESS:
+            self.third_task()
+
+
     def first_task(self):
         """
         Construct points located on the vertices to obtain an n-gon
@@ -46,13 +51,12 @@ class Tasker:
         """
         
         vertices = utils.calculate_polygon_vertices(VERTICES_NUMBER, SCALE_X, SCALE_Y)
-        shader = Shader("shaders/vertex.glsl", "shaders/fragment.glsl")
         
         self.objects = []
         for x, y in vertices:
             position = np.array([x, y, 1.0], dtype=np.float32)
             color = np.array([rand() for _ in range(3)], dtype=np.float32)
-            self.objects.append(Point(shader, position, color, POINT_SIZE, POINT_SMOOTH))
+            self.objects.append(Point(self.shader, position, color, POINT_SIZE, POINT_SMOOTH))
     
 
     def second_task(self):
@@ -61,7 +65,6 @@ class Tasker:
         Changing line thickness
         """
         
-        shader = Shader("shaders/vertex.glsl", "shaders/fragment.glsl")
         vertices = utils.calculate_polygon_vertices(VERTICES_NUMBER, SCALE_X, SCALE_Y)
 
         vertices_coords = []
@@ -76,6 +79,32 @@ class Tasker:
         vertices_coords = np.array(vertices_coords, dtype=np.float32)
         vertices_colors = np.array(vertices_colors, dtype=np.float32)
 
-        self.objects = [Polygon(shader, vertices_coords, vertices_colors, LINE_THICKNESS, LINE_SMOOTH)]
+        self.objects = [Polygon(self.shader, vertices_coords, vertices_colors, LINE_THICKNESS, LINE_SMOOTH)]
+    
+    def third_task(self):
+        """
+        Draw a broken line
+        """
+
+        vertices = [
+            # x1    y1    z1    x2    y2    z2
+            [-0.9,  0.4,  1.0, -0.2,  0.8,  1.0],
+            [-0.2,  0.8,  1.0,  0.0,  0.0,  1.0],
+            [ 0.0,  0.0,  1.0, -0.5, -0.6,  1.0],
+            [-0.5, -0.6,  1.0,  0.4, -0.6,  1.0],
+            [ 0.4, -0.6,  1.0,  0.8,  0.0,  1.0],
+        ]
+
+        self.objects = []
+
+        for vertex in vertices:
+            coords = np.array(vertex, dtype=np.float32)
+            
+            random_rgb = [rand() for _ in range(6)]
+            
+            colors = np.array(random_rgb, dtype=np.float32)
+
+            self.objects.append(Line(self.shader, coords, colors, LINE_THICKNESS, LINE_SMOOTH))        
 
     
+        

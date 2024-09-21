@@ -1,6 +1,7 @@
 from OpenGL.GL import *
 
 class Shape:
+    
     def __init__(self, shader, vertices, smooth):
         self.shader = shader
         self.vertices = vertices
