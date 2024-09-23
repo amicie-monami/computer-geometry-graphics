@@ -8,14 +8,15 @@ import utils
 from shader import Shader
 from shapes.figure import Figure
 
+from window import SCREEN_WIDTH, SCREEN_HEIGHT
 
-SCALE_X = 0.70
-SCALE_Y = 0.95
+SCALE_X = SCREEN_HEIGHT / SCREEN_WIDTH
+SCALE_Y = 1.0
 
 POINT_SIZE = 10
 POINT_SMOOTH = GL_POINT_SMOOTH # || None
 
-LINE_THICKNESS = 2
+LINE_THICKNESS = 3
 LINE_SMOOTH = GL_LINE_SMOOTH # || None
 
 
@@ -32,20 +33,80 @@ class Tasker:
         
         self.shader = Shader("shaders/vertex.glsl", "shaders/fragment.glsl")
         self.flat_shader = Shader("shaders/flat_vertex.glsl", "shaders/flat_fragment.glsl")
+        self.transform_shader = Shader("shaders/transf_vertex.glsl", "shaders/fragment.glsl")
 
-        self.tasks_keys = [glfw.KEY_1, glfw.KEY_2]
-        tasks_handlers  = [self.first_task, self.second_task]
+        self.tasks_keys = [glfw.KEY_1, glfw.KEY_2, glfw.KEY_3]
+        tasks_handlers  = [self.first_task, self.second_task, self.third_task]
         
         self.tasks = {key: task for key, task in zip(self.tasks_keys, tasks_handlers)}
         glfw.set_key_callback(window.window, self.handle_input)
 
 
-    def actual_objects(self):
+    def render_objects(self):
         """
         Returning current scene 
         objects for rendering
         """
-        return self.objects
+
+        if self.last_task == self.third_task:
+            line = self.objects[0]
+            line.transform_reset()
+
+            line.transform(glm.scale(glm.vec3(SCALE_X, SCALE_Y, 1.0)))
+            
+            #start (vertical line)
+            #left bottom 
+            line.transform(glm.translate(glm.vec3(-0.2, 0.3, 0.0)))
+            line.draw()
+
+            #right 
+            line.transform(glm.translate(glm.vec3(0.4, 0.0, 0.0)))
+            line.draw()
+
+            #down
+            line.transform(glm.translate(glm.vec3(0.0, -0.8, 0.0)))
+            line.draw()
+
+            # left
+            line.transform(glm.translate(glm.vec3(-0.4, 0.0, 0.0)))
+            line.draw()
+
+            #up left
+            line.transform(glm.translate(glm.vec3(-0.4, 0.4, 0.0)))
+            line.draw()
+
+            #right
+            line.transform(glm.translate(glm.vec3(1.2, 0.0, 0.0)))
+            line.draw()
+
+            #start (horizontal line)
+            #right bottom
+            line.transform(glm.rotate(glm.radians(90), glm.vec3(0.0, 0.0, 1.0)))
+            line.draw()
+
+            #up
+            line.transform(glm.translate(glm.vec3(0.4, 0.0, 0.0)))
+            line.draw()
+
+            #left bottom
+            line.transform(glm.translate(glm.vec3(0.4, 0.4, 0.0)))
+            line.draw()
+
+            #down
+            line.transform(glm.translate(glm.vec3(-1.2, 0.0, 0.0)))
+            line.draw()
+
+            #up left 
+            line.transform(glm.translate(glm.vec3(0.8, 0.4, 0.0)))
+            line.draw()
+
+            #down
+            line.transform(glm.translate(glm.vec3(-0.4, 0.0, 0.0)))
+            line.draw()
+
+        else:
+            for object in self.objects:
+                object.draw()
 
 
     def handle_input(self, window, key, scancode, action, mods):
@@ -188,15 +249,13 @@ class Tasker:
 
 
     def second_task(self):
-        shader = Shader("shaders/transf_vertex.glsl", "shaders/fragment.glsl")
-
         triangle_verticles = [
             -0.5, -0.2, 0.0, 1.0, 0.0, 0.0,
             -0.4,  0.2, 0.0, 0.0, 1.0, 0.0,
             -0.3, -0.2, 0.0, 0.0, 0.0, 1.0,  
         ]
         vertices = np.array(triangle_verticles, dtype=np.float32)
-        triangle = Figure(GL_TRIANGLES, shader, vertices) 
+        triangle = Figure(GL_TRIANGLES, self.transform_shader, vertices) 
 
         line_vertices = [
             -0.1, -0.4, 0.0, 1.0, 0.0, 0.0,
@@ -204,7 +263,7 @@ class Tasker:
         ]
 
         vertices  = np.array(line_vertices, dtype=np.float32)
-        line = Figure(GL_LINES, shader, vertices)
+        line = Figure(GL_LINES, self.transform_shader, vertices)
 
         rectangle_verticles = [
             0.1, 0.5, 0.0, 1.0, 0.0, 0.0,
@@ -214,8 +273,23 @@ class Tasker:
         ]
 
         vertices  = np.array(rectangle_verticles, dtype=np.float32)
-        indices  = np.array([0,1,2,1,2,3], dtype=np.uint32)
-        rectangle = Figure(GL_TRIANGLES, shader, vertices, indices)
+        indices   = np.array([0,1,2,1,2,3], dtype=np.uint32)
+        rectangle = Figure(GL_TRIANGLES, self.transform_shader, vertices, indices)
 
         self.objects=[triangle, line, rectangle]
+
+        for object in self.objects:
+            object.transform(glm.scale(glm.vec3(SCALE_X, SCALE_Y, 1.0)))
+
         self.last_task = self.second_task
+
+    def third_task(self):
+        vertices_with_colors = np.array([
+            0.0, 0.0, 0.0, rand(), rand(), rand(),
+            0.0, 0.4, 0.0, rand(), rand(), rand(),
+        ], dtype=np.float32)
+        
+        line = Figure(GL_LINES, self.transform_shader, vertices_with_colors, size=LINE_THICKNESS)
+
+        self.objects = [line]
+        self.last_task = self.third_task

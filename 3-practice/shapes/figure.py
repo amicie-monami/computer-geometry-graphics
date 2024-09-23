@@ -3,6 +3,7 @@ from shader import Shader
 from OpenGL.GL import *
 from .shape import Shape
 import glm
+import numpy as np
 
 class Figure(Shape):
 
@@ -20,6 +21,7 @@ class Figure(Shape):
         ):
         self.size = size  
         self.shader = shader
+        self.draw_func = None
         self.draw_mood = draw_mood
         self.smooth_mode = smooth_mode
         self.transform_matrix = glm.mat4(1.0)
@@ -52,12 +54,8 @@ class Figure(Shape):
         if type(matrix) == list:
             for mt in matrix:
                 self.transform_matrix @= mt
-            return
-         
+            return        
         self.transform_matrix @= matrix
-
-    def set_transform_matrix(self, matrix):
-        self.transform_matrix = matrix
 
     def transform_reset(self):
         self.transform_matrix = glm.mat4(1.0)

@@ -4,7 +4,7 @@ from tasker import Tasker
 class App:
 
     def __init__(self):
-        self.window = Window(640, 480)
+        self.window = Window()
         self.tasker = Tasker(self.window)
         return
         
@@ -16,8 +16,7 @@ class App:
 
     def draw(self):
         self.window.clear()
-        for obj in self.tasker.actual_objects():
-            obj.draw()
+        self.tasker.render_objects()
         self.window.swap_buffers()
 
 App().run()
