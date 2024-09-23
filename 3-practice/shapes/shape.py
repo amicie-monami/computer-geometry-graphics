@@ -2,8 +2,7 @@ from OpenGL.GL import *
 
 class Shape:
     
-    def __init__(self, shader, vertices, indices, front_and_back_mode, front_mode, back_mode):
-        self.shader = shader
+    def __init__(self, vertices, indices, front_and_back_mode, front_mode, back_mode):
         self.vertices = vertices
         self.indices = indices
 
@@ -39,7 +38,6 @@ class Shape:
         """
         Rendering
         """
-        self.shader.use()
         glBindVertexArray(self.vao)
         if self.ebo is not None:
             glDrawElements(draw_mode, len(self.indices), GL_UNSIGNED_INT, None)

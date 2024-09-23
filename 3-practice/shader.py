@@ -11,6 +11,9 @@ class Shader:
     def use(self):
         glUseProgram(self.program)
 
+    def get_program(self):
+        return self.program
+
     def __create_shader_program__(self, vertex_filepath, fragment_filepath):
         vertex   = self.__create_shader_module__(vertex_filepath, GL_VERTEX_SHADER)
         fragment = self.__create_shader_module__(fragment_filepath, GL_FRAGMENT_SHADER)

@@ -18,3 +18,29 @@ def prepare_vertices(vertices_coords):
         color = [rand() for _ in range(3)]
         vertices.extend(coords + color)        
     return numpy.array(vertices, dtype=numpy.float32)
+
+def scale_matrix(sx, sy, sz):
+    return numpy.array([
+        [sx, 0,  0,  0],
+        [0,  sy, 0,  0],
+        [0,  0,  sz, 0],
+        [0,  0,  0,  1],
+    ], dtype=numpy.float32)
+
+def rotation_matrix_z(angle):
+    cos_theta = numpy.cos(angle)
+    sin_theta = numpy.sin(angle)
+    return numpy.array([
+        [cos_theta, -sin_theta, 0, 0],
+        [sin_theta, cos_theta,  0, 0],
+        [0,         0,          1, 0],
+        [0,         0,          0, 1],
+    ], dtype=numpy.float32)
+
+def translation_matrix(tx, ty, tz):
+    return numpy.array([
+        [1, 0, 0, tx],
+        [0, 1, 0, ty],
+        [0, 0, 1, tz],
+        [0, 0, 0, 1],
+    ], dtype=numpy.float32)

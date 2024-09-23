@@ -14,8 +14,10 @@ SCALE_Y = 0.95
 
 POINT_SIZE = 10
 POINT_SMOOTH = GL_POINT_SMOOTH # || None
+
 LINE_THICKNESS = 2
 LINE_SMOOTH = GL_LINE_SMOOTH # || None
+
 
 class Tasker:
 
@@ -31,8 +33,8 @@ class Tasker:
         self.shader = Shader("shaders/vertex.glsl", "shaders/fragment.glsl")
         self.flat_shader = Shader("shaders/flat_vertex.glsl", "shaders/flat_fragment.glsl")
 
-        self.tasks_keys = [glfw.KEY_1]
-        tasks_handlers  = [self.first_task]
+        self.tasks_keys = [glfw.KEY_1, glfw.KEY_2]
+        tasks_handlers  = [self.first_task, self.second_task]
         
         self.tasks = {key: task for key, task in zip(self.tasks_keys, tasks_handlers)}
         glfw.set_key_callback(window.window, self.handle_input)
@@ -40,7 +42,7 @@ class Tasker:
 
     def actual_objects(self):
         """
-        Return current scene 
+        Returning current scene 
         objects for rendering
         """
         return self.objects
@@ -62,18 +64,35 @@ class Tasker:
                 self.paragraph = key
                 self.last_task()
 
-        
-        keys = [glfw.KEY_DOWN, glfw.KEY_DOWN, glfw.KEY_UP]
-        for idx in range(len(keys)):
-            if self.window.get_key(keys[idx]) == glfw.PRESS:
-                magnifier = (-1 + idx)
-                self.vertices_number += magnifier
-                
-                if self.vertices_number < 0:
-                    self.vertices_number = 0
-
+        if self.window.get_key(glfw.KEY_UP) == glfw.PRESS:
+            if self.last_task == self.first_task:
+                self.vertices_number += 1
                 self.last_task()
-                break
+                return
+
+            elif self.last_task == self.second_task:
+                alpha = 20
+                betta = -15
+                kx, ky = 2, 1.5
+                p = (0.2, 0.5)
+                x, y = 3, 3
+
+                self.objects[0].transform(glm.translate(glm.vec3(p, 0)) @ glm.scale(glm.vec3(kx, ky, 0)))
+                self.objects[1].transform(glm.rotate(glm.radians(alpha), glm.vec3(0, 0, 1)))
+                self.objects[2].transform(glm.rotate(glm.radians(betta), glm.vec3(x, y, 0)))
+
+
+        elif self.window.get_key(glfw.KEY_DOWN) == glfw.PRESS:
+            if self.last_task == self.first_task:
+                self.vertices_number -= 1
+                if self.vertices_number < 2:
+                    self.vertices_number = 2
+                self.last_task()
+                return
+
+            elif self.last_task == self.second_task:
+                for obj in self.objects:
+                    obj.transform_reset()
 
 
     def first_task(self):
@@ -168,3 +187,35 @@ class Tasker:
         self.last_task = self.first_task
 
 
+    def second_task(self):
+        shader = Shader("shaders/transf_vertex.glsl", "shaders/fragment.glsl")
+
+        triangle_verticles = [
+            -0.5, -0.2, 0.0, 1.0, 0.0, 0.0,
+            -0.4,  0.2, 0.0, 0.0, 1.0, 0.0,
+            -0.3, -0.2, 0.0, 0.0, 0.0, 1.0,  
+        ]
+        vertices = np.array(triangle_verticles, dtype=np.float32)
+        triangle = Figure(GL_TRIANGLES, shader, vertices) 
+
+        line_vertices = [
+            -0.1, -0.4, 0.0, 1.0, 0.0, 0.0,
+             0.5, -0.4, 0.0, 0.0, 1.0, 1.0
+        ]
+
+        vertices  = np.array(line_vertices, dtype=np.float32)
+        line = Figure(GL_LINES, shader, vertices)
+
+        rectangle_verticles = [
+            0.1, 0.5, 0.0, 1.0, 0.0, 0.0,
+            0.1, 0.2, 0.0, 0.0, 1.0, 0.0,
+            0.5, 0.5, 0.0, 0.0, 0.0, 1.0,
+            0.5, 0.2, 0.0, 1.0, 1.0, 1.0,
+        ]
+
+        vertices  = np.array(rectangle_verticles, dtype=np.float32)
+        indices  = np.array([0,1,2,1,2,3], dtype=np.uint32)
+        rectangle = Figure(GL_TRIANGLES, shader, vertices, indices)
+
+        self.objects=[triangle, line, rectangle]
+        self.last_task = self.second_task
